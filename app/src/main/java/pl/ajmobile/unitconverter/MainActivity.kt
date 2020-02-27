@@ -30,55 +30,59 @@ class MainActivity : AppCompatActivity() {
 @Preview
 @Composable
 fun UnitConverterUI() {
-    val units = state { TextFieldValue("20") }
+    val inputTextValue = state { TextFieldValue("20") }
     val radioOptions = listOf(Unit.KG.unitName, Unit.OZ.unitName)
-    val (selectedOption, onOptionSelected) = state { radioOptions.first() }
+    val (selectedSourceOption, onSourceOptionSelected) = state { radioOptions.first() }
+    val (selectedDestinationOption, onDestinationOptionSelected) = state { radioOptions[1] }
 
-    val calculatedValue = state { 0f }
+    val model = state {
+        CalculatorModel(
+            sourceUnit = selectedSourceOption.toUnit()!!,
+            destinationUnit = selectedDestinationOption.toUnit()!!,
+            inputValue = inputTextValue.value.text.toFloat()
+        )
+    }
 
     MaterialTheme {
         Surface(color = Color.White) {
             Center {
                 FlowColumn(crossAxisAlignment = FlowCrossAxisAlignment.Center) {
                     Text(text = "Kalkulator wag")
+                    Spacer(modifier = LayoutHeight(20.dp))
                     TextField(
                         keyboardType = KeyboardType.Number,
-                        value = units.value,
-                        onValueChange = { textFieldValue -> units.value = textFieldValue })
-                    Spacer(modifier = LayoutHeight(20.dp))
+                        value = inputTextValue.value,
+                        onValueChange = { textFieldValue -> inputTextValue.value = textFieldValue })
+
                     Column {
                         RadioGroup(
                             options = radioOptions,
-                            selectedOption = selectedOption,
-                            onSelectedChange = onOptionSelected
+                            selectedOption = selectedSourceOption,
+                            onSelectedChange = onSourceOptionSelected
                         )
                     }
+
                     Spacer(modifier = LayoutHeight(20.dp))
-                    Button(onClick = {
-                        calculatedValue.value = calculateValue(selectedOption, units.value.text)
-                    }) {
+                    Text(text = "Na jednostkę:")
+                    Column {
+                        RadioGroup(
+                            options = radioOptions,
+                            selectedOption = selectedDestinationOption,
+                            onSelectedChange = onDestinationOptionSelected
+                        )
+                    }
+
+                    Spacer(modifier = LayoutHeight(20.dp))
+                    Button(onClick = { model.value.calculate() }) {
                         Text(text = "Przelicz")
                     }
 
                     Spacer(modifier = LayoutHeight(40.dp))
 
-                    Text(text = "Wartość:  ${calculatedValue.value}")
+                    Text(text = "Wartość:  ${model.value.result}")
                 }
             }
         }
-    }
-}
-
-fun calculateValue(unit: String, value: String): Float {
-    val floatValue = value.toFloat()
-    return when (unit) {
-        Unit.KG.unitName -> {
-            floatValue * 35.2739619f
-        }
-        Unit.OZ.unitName -> {
-            floatValue * 0.0283495231f
-        }
-        else -> 0f
     }
 }
 
