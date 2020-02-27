@@ -35,13 +35,10 @@ fun UnitConverterUI() {
     val (selectedSourceOption, onSourceOptionSelected) = state { radioOptions.first() }
     val (selectedDestinationOption, onDestinationOptionSelected) = state { radioOptions[1] }
 
-    val model = state {
-        CalculatorModel(
-            sourceUnit = selectedSourceOption.toUnit()!!,
-            destinationUnit = selectedDestinationOption.toUnit()!!,
-            inputValue = inputTextValue.value.text.toFloat()
-        )
-    }
+    val model = CalculatorModel(
+        sourceUnit = selectedSourceOption.toUnit()!!,
+        destinationUnit = selectedDestinationOption.toUnit()!!
+    )
 
     MaterialTheme {
         Surface(color = Color.White) {
@@ -51,14 +48,15 @@ fun UnitConverterUI() {
                     Spacer(modifier = LayoutHeight(20.dp))
                     TextField(
                         keyboardType = KeyboardType.Number,
-                        value = inputTextValue.value,
-                        onValueChange = { textFieldValue -> inputTextValue.value = textFieldValue })
+                        value = model.inputValue.toString(),
+                        onValueChange = { value: String -> model.inputValue = value.toFloat() }
+                    )
 
                     Column {
                         RadioGroup(
                             options = radioOptions,
-                            selectedOption = selectedSourceOption,
-                            onSelectedChange = onSourceOptionSelected
+                            selectedOption = model.sourceUnit.unitName,
+                            onSelectedChange = { model.sourceUnit = it.toUnit()!! }
                         )
                     }
 
@@ -67,19 +65,19 @@ fun UnitConverterUI() {
                     Column {
                         RadioGroup(
                             options = radioOptions,
-                            selectedOption = selectedDestinationOption,
-                            onSelectedChange = onDestinationOptionSelected
+                            selectedOption = model.destinationUnit.unitName,
+                            onSelectedChange = { model.destinationUnit = it.toUnit()!! }
                         )
                     }
 
                     Spacer(modifier = LayoutHeight(20.dp))
-                    Button(onClick = { model.value.calculate() }) {
+                    Button(onClick = { model.calculate() }) {
                         Text(text = "Przelicz")
                     }
 
                     Spacer(modifier = LayoutHeight(40.dp))
 
-                    Text(text = "Wartość:  ${model.value.result}")
+                    Text(text = "Wartość:  ${model.result}")
                 }
             }
         }

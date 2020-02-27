@@ -10,9 +10,9 @@ enum class Unit(val unitName: String) {
 
 @Model
 class CalculatorModel(
-    val sourceUnit: Unit,
-    val destinationUnit: Unit,
-    val inputValue: Float,
+    var sourceUnit: Unit,
+    var destinationUnit: Unit,
+    var inputValue: Float = 0f,
     var result: Float = 0f
 ) {
     fun calculate(){
