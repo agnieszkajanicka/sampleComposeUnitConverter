@@ -21,43 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            UnitConverterUI()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun UnitConverterUI() {
-    MaterialTheme {
-        Surface(color = Color.White) {
-            Center {
-                FlowColumn(crossAxisAlignment = FlowCrossAxisAlignment.Center) {
-                    Text(text = "Kalkulator wag")
-                    TextField(value = "tutaj wpisz wartość")
-                    Spacer(modifier = LayoutHeight(20.dp))
-                    Column {
-                        RadioGroup {
-                            Row {
-                                RadioButton(selected = false, onSelect = {})
-                                Text(text = "Kilogramy")
-                            }
-                            Row {
-                                RadioButton(selected = false, onSelect = {})
-                                Text(text = "Uncje")
-                            }
-                        }
-                    }
-                    Spacer(modifier = LayoutHeight(20.dp))
-                    Button {
-                        Text(text = "Przelicz")
-                    }
-
-                    Spacer(modifier = LayoutHeight(40.dp))
-
-                    Text(text = "Wartość: ")
-                }
-            }
+            Greeting(name ="world")
         }
     }
 }
@@ -67,7 +31,7 @@ fun Greeting(name: String) {
     Text(text = "Hello $name!", style = MaterialTheme.typography().subtitle1)
 }
 
-//@Preview
+@Preview
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
